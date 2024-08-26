@@ -1,14 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Singleblog from "./Singleblog";
 import { Button } from "./ui/button";
 import { blogData, data } from "@/utils/dummydata";
 import { motion } from "framer-motion";
+import axios from "axios";
 const ListofBlog = () => {
   const categories = ["All", "technology", "lifestyle", "startup"];
 
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+const [blogs,setBlogs] = useState([])
+
+  const fetchBlogData = async ()=>{
+    const response = await axios.get('/api/blog')
+    setBlogs(response.data.blogs)
+    console.log(response.data.blogs);
+    
+  }
+
+  useEffect(()=>{
+    fetchBlogData()
+  },[])
+
+
+
+
 
   // function to managing the state
   const handleCategoryChange = (category) => {

@@ -5,9 +5,9 @@ import path from "path";
 import { BlogModel } from "@/models/blog.model";
 
 export async function GET(req) {
-  console.log("OKK");
+  const blogs = await BlogModel.find({});
   await DbConnection();
-  return NextResponse.json({ message: "Hello, World!" });
+  return NextResponse.json({ blogs });
 }
 
 // post api for creating a blog
