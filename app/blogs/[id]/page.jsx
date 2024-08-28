@@ -3,16 +3,20 @@ import { Github, Instagram, Linkedin } from "lucide-react";
 import { blogData } from "@/utils/dummydata";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Page = ({ params }) => {
   const [manageId, setManageId] = useState(null);
 
   // Fetch blog data based on the id from params
-  const fetchBlogData = () => {
-    const selectedBlog = blogData.find((blog) => blog.id == params.id);
-    if (selectedBlog) {
-      setManageId(selectedBlog);
-    }
+  const fetchBlogData = async () => {
+    const response = await axios.get("/api/blog", {
+      params: {
+        id: params.id,
+      },
+    });
+    setManageId(response.data);
+    console.log(response.data, "pratik");
   };
 
   useEffect(() => {
@@ -44,7 +48,7 @@ const Page = ({ params }) => {
       </p>
 
       <Image
-        src={manageId.imageUrl}
+        src={manageId?.image}
         className="rounded-md max-h-[460px] object-cover w-full mb-6"
         height={600}
         width={1260}
@@ -125,23 +129,23 @@ const Page = ({ params }) => {
       </p>
       <div className="mt-12 ">
         <h1 className="text-xl capitalize">share this article</h1>
-       <div className="flex">
-       {socialIcons.map((item, i) => {
-          return (
-            <div className="flex gap-3">
-              <a
-                href={item.link}
-                key={i}
-                target="_blank"
-                rel="noopener noreferrer"
-                className=" hover:text-zinc-900 flex gap-4 m-2 flex-row text-slate-800"
-              >
-                {item.icon}
-              </a>
-            </div>
-          );
-        })}
-       </div>
+        <div className="flex">
+          {socialIcons.map((item, i) => {
+            return (
+              <div className="flex gap-3">
+                <a
+                  href={item.link}
+                  key={i}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className=" hover:text-zinc-900 flex gap-4 m-2 flex-row text-slate-800"
+                >
+                  {item.icon}
+                </a>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

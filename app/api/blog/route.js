@@ -3,60 +3,76 @@ import { NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { BlogModel } from "@/models/blog.model";
+import { NextURL } from "next/dist/server/web/next-url";
 
 export async function GET(req) {
-  const blogs = await BlogModel.find({});
-  await DbConnection();
-  return NextResponse.json({ blogs });
-}
+  try {
+    await DbConnection();
+    const blogId = req.nextUrl.searchParams.get("id");
+    if (blogId) {
+      const blog = await BlogModel.findById(blogId);
+      return NextResponse.json(blog);
+    } else {
+      const blogs = await BlogModel.find({});
 
-// post api for creating a blog
-export async function POST(request) {
-  await DbConnection();
-  const formData = await request.formData();
+      return NextResponse.json({ blogs });
+    }
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
 
-  const image = formData.get("image");
-
-  // Validate the image file (optional but recommended)
-  if (!image || !image.name || !image.type.startsWith("image/")) {
     return NextResponse.json(
-      { success: false, message: "Invalid image file" },
-      { status: 400 }
+      { message: "Failed to fetch blogs", error: error.message },
+      { status: 500 }
     );
   }
+}
+export async function POST(request) {
+  try {
+    await DbConnection();
 
-  // Get image buffer data
-  const imageByteData = await image.arrayBuffer();
-  const imageBuffer = Buffer.from(imageByteData);
+    const formData = await request.formData();
+    const image = formData.get("image");
 
-  // Resolve the correct path for saving the file
-  const filePath = path.join(
-    process.cwd(),
-    "public",
-    `${new Date().getTime()}_${image.name}`
-  );
+    if (!image || !image.name || !image.type.startsWith("image/")) {
+      console.error("Invalid image file");
+      return NextResponse.json(
+        { success: false, message: "Invalid image file" },
+        { status: 400 }
+      );
+    }
 
-  // Write the file
-  await writeFile(filePath, imageBuffer);
+    const imageByteData = await image.arrayBuffer();
+    const imageBuffer = Buffer.from(imageByteData);
+    const timestamp = new Date().getTime();
+    const filePath = path.join(process.cwd(), "public", `${timestamp}_${image.name}`);
 
-  const imageUrl = `/${new Date().getTime()}_${image.name}`;
-  console.log(imageUrl);
+    await writeFile(filePath, imageBuffer);
+    console.log(`Image written successfully to: ${filePath}`);
 
-  const blogData = {
-    title: formData.get("title"),
-    description: formData.get("description"),
-    image: imageUrl,
-    author: formData.get("author"),
-    authorImg: formData.get("authorImg"),
-    category: formData.get("category"),
-    date: new Date(),
-  };
+    const imageUrl = `/${timestamp}_${image.name}`;
 
-  await BlogModel.create(blogData);
-  console.log("added successful blogdata");
+    const blogData = {
+      title: formData.get("title"),
+      description: formData.get("description"),
+      image: imageUrl,
+      author: formData.get("author"),
+      authorImg: formData.get("authorImg"),
+      category: formData.get("category"),
+      date: new Date(),
+    };
 
-  return NextResponse.json(
-    { success: true, blogData, msg: "blog data added" },
-    { status: 200 }
-  );
+    await BlogModel.create(blogData);
+    console.log("Blog data added successfully:", blogData);
+
+    return NextResponse.json(
+      { success: true, blogData, msg: "Blog data added" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error in POST /api/blog:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to create blog", error: error.message },
+      { status: 500 }
+    );
+  }
 }

@@ -8,50 +8,49 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 const CreateBlogPage = () => {
-  const [image, setImage] = useState(null); 
+  const [image, setImage] = useState(null);
   const [data, setData] = useState({
     title: "",
     description: "",
-    category: "",
+    category: "technology",
     author: "Pratiksmith Khamari",
     authorImg: "",
   });
 
   const changeHandler = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
-    
+
     console.log(data);
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]); 
+    setImage(e.target.files[0]);
   };
-const handleSubmit= async(e)=>{
-   e.preventDefault()
-   const formData = new FormData()
-    formData.append('title',data.title)
-    formData.append('description',data.description)
-    formData.append('category',data.category)
-    formData.append('author',data.author)
-    formData.append('authorImg',data.authorImg)
-    formData.append('image',image)
-    const postData = await axios.post('/api/blog',formData)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("category", data.category);
+    formData.append("author", data.author);
+    formData.append("authorImg", data.authorImg);
+    formData.append("image", image);
+    const postData = await axios.post("/api/blog", formData);
 
-    if(postData.data.success){
-      toast.success(postData.data.msg)
-      setImage('')
+    if (postData.data.success) {
+      toast.success(postData.data.msg);
+      setImage("");
       setData({
         title: "",
         description: "",
         category: "",
         author: "Pratiksmith Khamari",
         authorImg: "",
-      })
-    }else{
-      toast.error('error in posting blog data')
+      });
+    } else {
+      toast.error("error in posting blog data");
     }
-
-}
+  };
   return (
     <div className="w-full p-4 flex justify-center items-center">
       <form action="" className="sm:w-1/2 w-full" onSubmit={handleSubmit}>
@@ -125,6 +124,7 @@ const handleSubmit= async(e)=>{
           name="category"
           onChange={changeHandler}
           value={data.category}
+       
           className="p-3 border-2 font-semibold text-slate-600"
         >
           <option value="technology">Technology</option>

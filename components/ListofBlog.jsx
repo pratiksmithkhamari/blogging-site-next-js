@@ -11,22 +11,17 @@ const ListofBlog = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-const [blogs,setBlogs] = useState([])
+  const [blogs, setBlogs] = useState([]);
 
-  const fetchBlogData = async ()=>{
-    const response = await axios.get('/api/blog')
-    setBlogs(response.data.blogs)
-    console.log(response.data.blogs);
-    
-  }
+  const fetchBlogData = async () => {
+    const response = await axios.get("/api/blog");
+    setBlogs(response.data?.blogs);
+    console.log(response.data.blogs[0]?.image);
+  };
 
-  useEffect(()=>{
-    fetchBlogData()
-  },[])
-
-
-
-
+  useEffect(() => {
+    fetchBlogData();
+  }, []);
 
   // function to managing the state
   const handleCategoryChange = (category) => {
@@ -37,8 +32,8 @@ const [blogs,setBlogs] = useState([])
 
   const filterBlogs =
     selectedCategory == "All"
-      ? blogData
-      : blogData.filter((blog) => blog?.category == selectedCategory);
+      ? blogs
+      : blogs.filter((blog) => blog?.category == selectedCategory);
 
   return (
     <div>
@@ -63,12 +58,12 @@ const [blogs,setBlogs] = useState([])
         {filterBlogs.map((data) => {
           return (
             <Singleblog
-              key={data.id}
+              key={data._id}
               title={data.title}
               description={data.description}
               category={data.category}
-              imgUrl={data.imageUrl}
-              id={data.id}
+              imgUrl={data?.image}
+              id={data._id}
             />
           );
         })}
