@@ -28,9 +28,17 @@ const Page = ({ params }) => {
   }
 
   const socialIcons = [
-    { icon: <Instagram />, link: "https://instagram.com/pratiksmithkhamari" },
-    { icon: <Github />, link: "https://github.com/pratiksmithkhamari" },
-    { icon: <Linkedin />, link: "https://linkedin.com/in/pratiksmithkhamari" },
+    {
+      icon: <Instagram />,
+      link: "https://instagram.com/pratiksmithkhamari",
+      id: 1,
+    },
+    { icon: <Github />, link: "https://github.com/pratiksmithkhamari", id: 2 },
+    {
+      icon: <Linkedin />,
+      link: "https://linkedin.com/in/pratiksmithkhamari",
+      id: 3,
+    },
   ];
 
   return (
@@ -63,12 +71,11 @@ const Page = ({ params }) => {
       <div className="mt-12 ">
         <h1 className="text-xl capitalize">share this article</h1>
         <div className="flex">
-          {socialIcons.map((item, i) => {
+          {socialIcons.map((item) => {
             return (
-              <div className="flex gap-3">
+              <div className="flex gap-3" key={item?.id}>
                 <a
                   href={item.link}
-                  key={i}
                   target="_blank"
                   rel="noopener noreferrer"
                   className=" hover:text-zinc-900 flex gap-4 m-2 flex-row text-slate-800"

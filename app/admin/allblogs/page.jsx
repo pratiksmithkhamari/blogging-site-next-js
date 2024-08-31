@@ -5,7 +5,7 @@ import TableData from "@/components/admincomponents/TableData";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const page = () => {
+const Page = () => {
   const [data, setData] = useState([]);
   const fetchData = async () => {
     const response = await axios.get("/api/blog");
@@ -60,4 +60,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

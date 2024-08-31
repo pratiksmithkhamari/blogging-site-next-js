@@ -38,12 +38,14 @@ const Heading = () => {
         animate={{ opacity: 1 }}
         transition={{ ease: "easeIn", duration: 0.6 }}
       >
-        Welcome to my Blogging site, your go-to source for the latest in technology, lifestyle trends, and startup innovations. Dive into insightful articles, expert tips, and inspiring stories that fuel creativity, growth, and success in today's fast-paced world
+        Welcome to my Blogging site, your go-to source for the latest in
+        technology, lifestyle trends, and startup innovations. Dive into
+        insightful articles, expert tips, and inspiring stories that fuel
+        creativity, growth, and success in today&apos;s fast-paced world
       </motion.p>
 
       <form
         onSubmit={handleFormSubmit}
-        action=""
         className="sm:w-3/4 w-full  mx-auto  flex justify-center "
       >
         <div className="flex gap-2 items-center p-2 ">
