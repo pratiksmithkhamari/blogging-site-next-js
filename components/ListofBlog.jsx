@@ -2,61 +2,65 @@
 
 import React, { useEffect, useState } from "react";
 import Singleblog from "./Singleblog";
-import { Button } from "./ui/button";
-import { blogData, data } from "@/utils/dummydata";
 import { motion } from "framer-motion";
 import axios from "axios";
+
 const ListofBlog = () => {
   const categories = ["All", "technology", "lifestyle", "startup"];
-
+  
   const [selectedCategory, setSelectedCategory] = useState("All");
-
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true); 
 
   const fetchBlogData = async () => {
-    const response = await axios.get("/api/blog");
-    setBlogs(response.data?.blogs);
-    console.log(response.data.blogs[0]?.image);
+    try {
+      const response = await axios.get("/api/blog");
+      setBlogs(response.data?.blogs);
+      setLoading(false); // Set loading to false when data is fetched
+    } catch (error) {
+      console.error("Error fetching blog data:", error);
+      setLoading(false); // Even on error, stop loading
+    }
   };
 
   useEffect(() => {
     fetchBlogData();
   }, []);
 
-  // function to managing the state
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
 
-  // filtering logic of blog
-
   const filterBlogs =
-    selectedCategory == "All"
+    selectedCategory === "All"
       ? blogs
-      : blogs.filter((blog) => blog?.category == selectedCategory);
+      : blogs.filter((blog) => blog?.category === selectedCategory);
 
   return (
     <div>
+      {/* Category selection buttons */}
       <div className="flex items-center justify-center my-12 gap-3">
-        {categories.map((item, i) => {
-          return (
-            <button
-              key={i}
-              onClick={() => handleCategoryChange(item)}
-              className={`${
-                selectedCategory == item
-                  ? "bg-slate-800 text-white"
-                  : "bg-white text-slate-900"
-              } text-slate-900 font-sans font-bold  rounded-md p-2`}
-            >
-              {item}
-            </button>
-          );
-        })}
+        {categories.map((item, i) => (
+          <button
+            key={i}
+            onClick={() => handleCategoryChange(item)}
+            className={`${
+              selectedCategory === item
+                ? "bg-slate-800 text-white"
+                : "bg-white text-slate-900"
+            } text-slate-900 font-sans font-bold rounded-md p-2`}
+          >
+            {item}
+          </button>
+        ))}
       </div>
-      <motion.div className="flex flex-wrap justify-center items-center gap-6  mx-auto">
-        {filterBlogs.map((data) => {
-          return (
+
+      {/* Blogs section */}
+      <motion.div className="flex flex-wrap justify-center items-center gap-6 mx-auto p-0 sm:p-8">
+        {loading ? (
+          <div className="text-center">Loading...</div> 
+        ) : filterBlogs.length > 0 ? (
+          filterBlogs.map((data) => (
             <Singleblog
               key={data._id}
               title={data.title}
@@ -65,8 +69,10 @@ const ListofBlog = () => {
               imgUrl={data?.image}
               id={data._id}
             />
-          );
-        })}
+          ))
+        ) : (
+          <div>No blogs found.</div> 
+        )}
       </motion.div>
     </div>
   );

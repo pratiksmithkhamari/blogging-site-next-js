@@ -25,7 +25,7 @@ const Singleblog = ({ title, description, imgUrl, category,id }) => {
         </p>
         <div className="p-2">
           <h2 className="text-xl font-bold my-2 line-clamp-2">{title}</h2>
-          <p className="text-sm mb-2 line-clamp-3 font-sans">{description}</p>
+          <p className="text-sm mb-2 line-clamp-3 font-sans" dangerouslySetInnerHTML={{ __html: description }}></p>
           <Link href={`/blogs/${id}`}><Button variant="secondary" className="text-red-700 font-semibold shadow-sm hover:bg-slate-200">
             Read more..
           </Button></Link>

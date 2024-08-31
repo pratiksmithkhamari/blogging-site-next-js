@@ -4,7 +4,7 @@ import { writeFile } from "fs/promises";
 import path from "path";
 import { BlogModel } from "@/models/blog.model";
 import { NextURL } from "next/dist/server/web/next-url";
-
+import fs from "fs";
 export async function GET(req) {
   try {
     await DbConnection();
@@ -44,7 +44,11 @@ export async function POST(request) {
     const imageByteData = await image.arrayBuffer();
     const imageBuffer = Buffer.from(imageByteData);
     const timestamp = new Date().getTime();
-    const filePath = path.join(process.cwd(), "public", `${timestamp}_${image.name}`);
+    const filePath = path.join(
+      process.cwd(),
+      "public",
+      `${timestamp}_${image.name}`
+    );
 
     await writeFile(filePath, imageBuffer);
     console.log(`Image written successfully to: ${filePath}`);
@@ -71,8 +75,31 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error in POST /api/blog:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to create blog", error: error.message },
+      {
+        success: false,
+        message: "Failed to create blog",
+        error: error.message,
+      },
       { status: 500 }
     );
   }
+}
+
+// api for deleting a blog
+
+export async function DELETE(req) {
+  const id = req.nextUrl.searchParams.get("id");
+  const blog = await BlogModel.findById(id);
+  if (!blog) {
+    return NextResponse.json(
+      { success: false, message: "Blog not found" },
+      { status: 404 }
+    );
+  }
+  fs.unlink(`./public${blog.image}`, () => {});
+  await BlogModel.findByIdAndDelete(id);
+  return NextResponse.json({
+    success: true,
+    message: "Blog deleted successfully",
+  });
 }
