@@ -1,5 +1,6 @@
 import React from "react";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import Image from "next/image";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -9,7 +10,11 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
+            <div className="flex">
             <h3 className="text-xl font-bold mb-4">About Us</h3>
+            
+            </div>
+            
             <p className="text-gray-300">
               We are passionate about sharing insights and stories from the
               world of technology, design, and innovation.
@@ -71,19 +76,21 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-gray-300">
+              <a href="#" className="hover:text-gray-300" aria-label="Facebook">
                 <Facebook size={24} />
               </a>
-              <a href="#" className="hover:text-gray-300">
+              <a href="#" className="hover:text-gray-300" aria-label="Twitter">
                 <Twitter size={24} />
               </a>
-              <a href="#" className="hover:text-gray-300">
+              <a href="#" className="hover:text-gray-300" aria-label="Instagram">
                 <Instagram size={24} />
               </a>
-              <a href="#" className="hover:text-gray-300">
+              <a href="#" className="hover:text-gray-300" aria-label="LinkedIn">
                 <Linkedin size={24} />
               </a>
+              
             </div>
+            <Image src={'/logo2.png'} height={200} width={200} alt="logo" />
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
